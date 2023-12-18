@@ -1,0 +1,27 @@
+<Project TreatAsLocalProperty="CleanWhileBuilding">
+  <PropertyGroup>
+    <SourceDirectory>runtime</SourceDirectory>
+    <PortableBuild>true</PortableBuild>
+
+    <TargetOS>wasi</TargetOS>
+    <TargetArchitecture>wasm</TargetArchitecture>
+
+    <OverrideTargetRid>wasi-wasm</OverrideTargetRid>
+    <CleanWhileBuilding>false</CleanWhileBuilding>
+    <BuildAllConfigurations>false</BuildAllConfigurations>
+    <AddPackBuildArg>false</AddPackBuildArg>
+
+    <StandardSourceBuildArgs>$(StandardSourceBuildArgs) -os $(TargetOS) -arch $(TargetArchitecture)</StandardSourceBuildArgs>
+    <BuildCommandExtraArgs Condition="'$(BuildAllConfigurations)' != ''">$(BuildCommandExtraArgs) /p:BuildAllConfigurations=$(BuildAllConfigurations)</BuildCommandExtraArgs>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ExtraPackageVersionPropsPackageInfo Include="MicrosoftBuildVersion" Version="17.8.0" />
+    <ExtraPackageVersionPropsPackageInfo Include="MicrosoftBuildTasksCoreVersion" Version="17.8.0" />
+    <ExtraPackageVersionPropsPackageInfo Include="MicrosoftBuildFrameworkVersion" Version="17.8.0" />
+    <ExtraPackageVersionPropsPackageInfo Include="MicrosoftBuildUtilitiesVersion" Version="17.8.0" />
+
+    <ExtraPackageVersionPropsPackageInfo Include="SystemReflectionMetadataVersion" Version="%24(SystemTextJsonVersion)" />
+    <ExtraPackageVersionPropsPackageInfo Include="SystemCollectionsImmutableVersion" Version="%24(SystemReflectionMetadataVersion)" />
+  </ItemGroup>
+</Project>

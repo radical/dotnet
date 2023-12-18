@@ -482,7 +482,7 @@
         Include="$(SourceBuiltPackagesPath)*.nupkg"
         Exclude="
           $(SourceBuiltPackagesPath)*.symbols.nupkg;
-          @(PreviouslySourceBuiltPackages)" />
+          @(_CurrentSourceBuiltPackages)" />
     </ItemGroup>
 
     <ItemGroup>

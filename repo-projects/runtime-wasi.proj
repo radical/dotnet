@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <ShortStackConfig>Wasi</ShortStackConfig>
+  </PropertyGroup>
+  <Import Project="runtime.proj" />
+</Project>

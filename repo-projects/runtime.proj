@@ -1,5 +1,6 @@
 <Project>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(ShortStackConfig).props" Condition="Exists('$(ShortStackConfig).props')" />
 
   <!-- Build arguments -->
   <PropertyGroup>
@@ -7,10 +8,10 @@
 
     <CleanCommand>$(ProjectDirectory)/clean$(ShellExtension)</CleanCommand>
 
-    <OverrideTargetRid>$(TargetRid)</OverrideTargetRid>
-    <OverrideTargetRid Condition="'$(TargetOS)' == 'OSX'">osx-$(Platform)</OverrideTargetRid>
-    <OverrideTargetRid Condition="'$(TargetOS)' == 'FreeBSD'">freebsd-$(Platform)</OverrideTargetRid>
-    <OverrideTargetRid Condition="'$(TargetOS)' == 'Windows_NT'">win-$(Platform)</OverrideTargetRid>
+    <OverrideTargetRid Condition="'$(OverrideTargetRid)' == ''">$(TargetRid)</OverrideTargetRid>
+    <OverrideTargetRid Condition="'$(OverrideTargetRid)' == '' and '$(TargetOS)' == 'OSX'">osx-$(Platform)</OverrideTargetRid>
+    <OverrideTargetRid Condition="'$(OverrideTargetRid)' == '' and '$(TargetOS)' == 'FreeBSD'">freebsd-$(Platform)</OverrideTargetRid>
+    <OverrideTargetRid Condition="'$(OverrideTargetRid)' == '' and '$(TargetOS)' == 'Windows_NT'">win-$(Platform)</OverrideTargetRid>
 
     <_platformIndex>$(NETCoreSdkRuntimeIdentifier.LastIndexOf('-'))</_platformIndex>
     <RuntimeOS>$(NETCoreSdkRuntimeIdentifier.Substring(0, $(_platformIndex)))</RuntimeOS>
@@ -31,6 +32,8 @@
     <BuildCommandArgs>$(BuildCommandArgs) /p:PortableBuild=$(PortableBuild)</BuildCommandArgs>
     <BuildCommandArgs>$(BuildCommandArgs) /p:SourceBuildNonPortable=$(BuildNonPortable)</BuildCommandArgs>
     <BuildCommandArgs>$(BuildCommandArgs) /p:UsingToolMicrosoftNetCompilers=false</BuildCommandArgs>
+    <BuildCommandArgs Condition="'$(ShortStackConfig)' == ''">$(BuildCommandArgs) /p:UsingToolMicrosoftNetCompilers=false /p:breakhere</BuildCommandArgs>
+    <BuildCommandArgs Condition="'$(BuildCommandExtraArgs)' != ''">$(BuildCommandArgs) $(BuildCommandExtraArgs)</BuildCommandArgs>
     <BuildCommand>$(StandardSourceBuildCommand) $(BuildCommandArgs)</BuildCommand>
   </PropertyGroup>
 
@@ -54,6 +57,9 @@
       <RepositoryReference Include="cecil" />
       <RepositoryReference Include="symreader" />
       <RepositoryReference Include="source-build-externals" />
+
+      <RepositoryReference Condition="'$(ShortStackConfig)' == ''" Include="runtime-wasm" />
+      <RepositoryReference Condition="'$(ShortStackConfig)' == ''" Include="runtime-wasi" />
   </ItemGroup>
 
   <Target Name="SetOutputList" AfterTargets="Package" BeforeTargets="GatherBuiltPackages">
@@ -63,5 +69,6 @@
     </ItemGroup>
   </Target>
 
+  <Import Project="$(ShortStackConfig).targets" Condition="Exists('$(ShortStackConfig).targets')" />
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
